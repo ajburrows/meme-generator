@@ -7,21 +7,30 @@ export default function Main() {
         imgUrl:"http://i.imgflip.com/1bij.jpg"
     })
 
+    function handleChange(event){
+        const {value} = event.currentTarget // destructuring to get the value of the input element
+        setMeme(prevMeme => ({
+            ...prevMeme,
+            topText: value
+        }))
+    }
+
     return (
         <main>
             <div className="form">
                 <label>Top Text
                     <input
                         type="text"
-                        placeholder={meme.topText}
+                        placeholder="One does not simply"
                         name="topText"
+                        onChange={handleChange}
                     />
                 </label>
 
                 <label>Bottom Text
                     <input
                         type="text"
-                        placeholder={meme.bottomText}
+                        placeholder="Walk into Mordor"
                         name="bottomText"
                     />
                 </label>
@@ -29,8 +38,8 @@ export default function Main() {
             </div>
             <div className="meme">
                 <img src={meme.imgUrl} />
-                <span className="top">One does not simply</span>
-                <span className="bottom">Walk into Mordor</span>
+                <span className="top">{meme.topText}</span>
+                <span className="bottom">{meme.bottomText}</span>
             </div>
         </main>
     )
