@@ -1,17 +1,33 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 export default function Main() {
+    const [memeArray, setMemeArray] = useState([])
     const [meme, setMeme] = useState({
         topText: "One does not simply",
         bottomText:"Walk into Mordor",
         imgUrl:"http://i.imgflip.com/1bij.jpg"
     })
 
-    function handleChange(event){
-        const {value} = event.currentTarget // destructuring to get the value of the input element
+    useEffect(() => {
+        fetch('https://api.imgflip.com/get_memes')
+            .then(response => response.json())
+            .then(respObj => setMemeArray(respObj.data.memes))
+    }, [])
+
+    function getRandomImage(){
+        const imgIndex = Math.floor(Math.random() * memeArray.length)
+        console.log(memeArray[imgIndex])
         setMeme(prevMeme => ({
             ...prevMeme,
-            topText: value
+            imgUrl: memeArray[imgIndex].url
+        }))
+    }
+
+    function handleChange(event){
+        const {value, name} = event.currentTarget // destructuring to get the value of the input element
+        setMeme(prevMeme => ({
+            ...prevMeme,
+            [name]: value
         }))
     }
 
@@ -24,6 +40,7 @@ export default function Main() {
                         placeholder="One does not simply"
                         name="topText"
                         onChange={handleChange}
+                        value={meme.topText}
                     />
                 </label>
 
@@ -32,9 +49,11 @@ export default function Main() {
                         type="text"
                         placeholder="Walk into Mordor"
                         name="bottomText"
+                        onChange={handleChange}
+                        value={meme.bottomTextText}
                     />
                 </label>
-                <button>Get a new meme image 🖼</button>
+                <button onClick={getRandomImage}>Get a new meme image 🖼</button>
             </div>
             <div className="meme">
                 <img src={meme.imgUrl} />
